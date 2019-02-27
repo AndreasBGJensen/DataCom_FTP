@@ -29,7 +29,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>dtufinest-2sem-cdio1</finalName>
+                    <finalName>dtufinest-2sem-datacom</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>program</outputDirectory>
                 </configuration>
@@ -55,11 +55,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.15</version>
-        </dependency>
     </dependencies>
 
 
