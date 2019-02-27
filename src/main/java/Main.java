@@ -1,9 +1,47 @@
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.regex.Pattern;
 
 public class Main {
 
     public static void main(String[] args) {
+        try{
 
+            Socket clientSocket = new Socket("ftp.cs.brown.edu", 21);
+
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+
+            do{
+                System.out.println(inFromServer.readLine());
+            }while(inFromServer.ready());
+
+            System.out.println("finished");
+
+            outToServer.writeBytes("USER\r\n");
+            do{
+                System.out.println(inFromServer.readLine());
+            }while(inFromServer.ready());
+
+
+            outToServer.writeBytes("FEAT\r\n");
+
+            do{
+                System.out.println(inFromServer.readLine());
+            }while(inFromServer.ready());
+
+            outToServer.writeBytes("PASV\r\n");
+
+            do{
+                System.out.println(inFromServer.readLine());
+            }while(inFromServer.ready());
+
+
+        }catch(java.io.IOException e){
+            e.printStackTrace();
+        }
     }
 
 
