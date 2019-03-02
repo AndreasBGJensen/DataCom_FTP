@@ -38,6 +38,8 @@ public class Main {
                 System.out.println(inFromServer.readLine());
             }while(inFromServer.ready());
 
+            clientSocket.close();
+
 
         }catch(java.io.IOException e){
             e.printStackTrace();
