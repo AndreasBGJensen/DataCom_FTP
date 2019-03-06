@@ -49,9 +49,8 @@ public class FTPProtocol {
                     "\ndir                      (to List contents of working directory)" +
                     "\n'directory name'         (to cd to named directory)" +
                     "\nretr 'file name'         (to retrieve a named file)" +
-                    "\nstore 'file name'        (to upload a named file)" +
+                    "\nstore 'file name'        (to upload a named file to the server)" +
                     "\nappend 'file name'       (to append an existing file)" +
-                    "\nstore 'file name'        (to upload a file to the server)" +
                     "\nexit                     (to exit program)");
 
             int x = 1;
