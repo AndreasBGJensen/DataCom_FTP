@@ -10,7 +10,7 @@ public class FTPProtocol {
     public static void main(String[] args) {
         try {
 
-            System.out.println("This FTP client is modelled after the 'Command Prompt'. Use the commands the same commands.");
+            System.out.println("This FTP client is modelled after the 'Command Prompt', using similar commands.");
 
             //Get Host Name
             Scanner scan = new Scanner(System.in);
@@ -47,11 +47,12 @@ public class FTPProtocol {
             System.out.println("\nYou are now logged into the Server. You have the following command options:" +
                     "\npwd                      (to print working directory)" +
                     "\ndir                      (to List contents of working directory)" +
-                    "\n'directory name'         (to cd to named directory)" +
+                    "\ncd 'directory name'      (to cd to specified directory)" +
                     "\nretr 'file name'         (to retrieve a named file)" +
                     "\nstore 'file name'        (to upload a named file to the server)" +
                     "\nappend 'file name'       (to append an existing file)" +
                     "\nexit                     (to exit program)");
+            System.out.println("-----------------");
 
             int x = 1;
             while (x == 1) {
@@ -79,6 +80,7 @@ public class FTPProtocol {
                         BufferedReader inFromDataSocket3 = new BufferedReader(new InputStreamReader((dataSocket3.getInputStream())));
                         outToServer.writeBytes("retr " + file + "\r\n");
                         getTxt(inFromDataSocket3);
+                        System.out.println("-----------------");
                         break;
 
                     case "app":
@@ -93,12 +95,12 @@ public class FTPProtocol {
                         toEditDataSocket.writeBytes(editText);
                         toEditDataSocket.close();
                         getTxt(inFromServer);
+                        System.out.println("-----------------");
                         break;
 
                     case "sto":
                         String uploadFile = cmd.substring(7);
                         Socket uploadDataSocket = generateDataSocket(outToServer, inFromServer);
-                        BufferedReader inFromUploadDataSocket = new BufferedReader(new InputStreamReader(uploadDataSocket.getInputStream()));
                         DataOutputStream toUploadDataSocket = new DataOutputStream(uploadDataSocket.getOutputStream());
 
                         System.out.println("Input the text you want the file to contain:");
@@ -107,17 +109,23 @@ public class FTPProtocol {
                         toUploadDataSocket.writeBytes(uploadText);
                         toUploadDataSocket.close();
                         getTxt(inFromServer);
+                        System.out.println("-----------------");
                         break;
 
                     case "exi":
                         x = 0;
                         break;
 
-                    default:
-                        outToServer.writeBytes("cwd " + cmd + "\r\n");
+                    case "cd ":
+                        String directory = cmd.substring(3);
+                        outToServer.writeBytes("cwd " + directory + "\r\n");
                         getTxt(inFromServer);
                         System.out.println("-----------------");
                         break;
+
+                    default:
+                        System.out.println("Command unkown, Try again.");
+                        System.out.println("-----------------");
                 }
             }
 
