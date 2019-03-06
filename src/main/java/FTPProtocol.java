@@ -125,7 +125,7 @@ public class FTPProtocol {
                         break;
 
                     default:
-                        System.out.println("Command unkown, Try again.");
+                        System.out.println("Command unknown, Try again.");
                         System.out.println("-----------------");
                 }
             }
