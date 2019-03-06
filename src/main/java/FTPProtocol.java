@@ -80,6 +80,7 @@ public class FTPProtocol {
                         BufferedReader inFromDataSocket3 = new BufferedReader(new InputStreamReader((dataSocket3.getInputStream())));
                         outToServer.writeBytes("retr " + file + "\r\n");
                         getTxt(inFromDataSocket3);
+                        getTxt(inFromServer);
                         System.out.println("-----------------");
                         break;
 
@@ -134,7 +135,7 @@ public class FTPProtocol {
 
         } catch (java.io.IOException ioE) {
             System.out.println(ioE);
-            System.exit(1);
+            System.exit(-2);
         }
     }
 
