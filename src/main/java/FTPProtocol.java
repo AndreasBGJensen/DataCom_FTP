@@ -50,6 +50,8 @@ public class FTPProtocol {
                     "\n'directory name'         (to cd to named directory)" +
                     "\nretr 'file name'         (to retrieve a named file)" +
                     "\nstore 'file name'        (to upload a named file)" +
+                    "\nappend 'file name'       (to append an existing file)" +
+                    "\nstore 'file name'        (to upload a file to the server)" +
                     "\nexit                     (to exit program)");
 
             int x = 1;
@@ -80,17 +82,31 @@ public class FTPProtocol {
                         getTxt(inFromDataSocket3);
                         break;
 
+                    case "app":
+                        String editFile = cmd.substring(7);
+                        Socket editDataSocket = generateDataSocket(outToServer, inFromServer);
+                        BufferedReader inFromEditDataSocket = new BufferedReader(new InputStreamReader(editDataSocket.getInputStream()));
+                        DataOutputStream toEditDataSocket = new DataOutputStream(editDataSocket.getOutputStream());
+
+                        System.out.println("Input the text to append the file with:");
+                        String editText = scan.nextLine();
+                        outToServer.writeBytes("APPE " + editFile + "\r\n");
+                        toEditDataSocket.writeBytes(editText);
+                        toEditDataSocket.close();
+                        getTxt(inFromServer);
+                        break;
+
                     case "sto":
                         String uploadFile = cmd.substring(7);
                         Socket uploadDataSocket = generateDataSocket(outToServer, inFromServer);
                         BufferedReader inFromUploadDataSocket = new BufferedReader(new InputStreamReader(uploadDataSocket.getInputStream()));
                         DataOutputStream toUploadDataSocket = new DataOutputStream(uploadDataSocket.getOutputStream());
 
-                        outToServer.writeBytes("APPE" + uploadFile + "\r\n");
-                        getTxt(inFromServer);
-                        toUploadDataSocket.writeBytes("info");
+                        System.out.println("Input the text you want the file to contain:");
+                        String uploadText = scan.nextLine();
+                        outToServer.writeBytes("STOR " + uploadFile + "\r\n");
+                        toUploadDataSocket.writeBytes(uploadText);
                         toUploadDataSocket.close();
-                        getTxt(inFromUploadDataSocket);
                         getTxt(inFromServer);
                         break;
 
@@ -125,7 +141,6 @@ public class FTPProtocol {
     }
 
     public static Socket generateDataSocket(DataOutputStream outToServer, BufferedReader inFromServer) throws java.io.IOException {
-        int x;
         String newSocketAddress = null;
         outToServer.writeBytes("PASV\r\n");
         //while (true) {
@@ -145,7 +160,6 @@ public class FTPProtocol {
         //create new Socket & input/output Stream
         return new Socket(address, port);
     }
-
 
     public static String getAddress(String str) {
         String[] ip = str.split(Pattern.quote(","));
