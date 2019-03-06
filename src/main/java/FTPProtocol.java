@@ -131,23 +131,19 @@ public class FTPProtocol {
         }
     }
 
-    public static void /*int*/ getTxt(BufferedReader inFromServer) throws java.io.IOException {
+    public static void getTxt(BufferedReader inFromServer) throws java.io.IOException {
         do {
             String line = inFromServer.readLine();
             System.out.println(line);
-            //if(line == null || line.length() == 0){return 0;}
+
         } while (inFromServer.ready());
-        //return 1;
     }
 
     public static Socket generateDataSocket(DataOutputStream outToServer, BufferedReader inFromServer) throws java.io.IOException {
         String newSocketAddress = null;
         outToServer.writeBytes("PASV\r\n");
-        //while (true) {
         newSocketAddress = inFromServer.readLine();
         System.out.println(newSocketAddress);
-        //if(newSocketAddress != null){break;}
-        //}
 
         //convert socket address to IP and Port
         String[] line = newSocketAddress.split(Pattern.quote("("));
@@ -165,7 +161,6 @@ public class FTPProtocol {
         String[] ip = str.split(Pattern.quote(","));
         String finalIP = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
 
-        //System.out.println(finalIP);
         return finalIP;
     }
 
@@ -176,7 +171,6 @@ public class FTPProtocol {
         int finalP = ((Integer.parseInt(port[4]) * 256)
                 + Integer.parseInt(port[5].substring(0, port[5].length() - 1)));
 
-        //System.out.println(finalP);
         return finalP;
     }
 }
