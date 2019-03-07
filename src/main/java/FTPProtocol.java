@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -49,6 +47,7 @@ public class FTPProtocol {
                     "\ndir                      (to List contents of working directory)" +
                     "\n'directory name'         (to cd to named directory)" +
                     "\nretr 'file name'         (to retrieve a named file)" +
+                    "\nget 'file name'                   (to store file locally )" +
                     "\nstore 'file name'        (to upload a named file)" +
                     "\nexit                     (to exit program)");
 
@@ -75,10 +74,17 @@ public class FTPProtocol {
                     case "ret":
                         String file = cmd.substring(5);
                         Socket dataSocket3 = generateDataSocket(outToServer, inFromServer);
-                        BufferedReader inFromDataSocket3 = new BufferedReader(new InputStreamReader((dataSocket3.getInputStream())));
+                        BufferedReader inFromDataSocket3 = new BufferedReader(new InputStreamReader(dataSocket3.getInputStream()));
                         outToServer.writeBytes("retr " + file + "\r\n");
                         getTxt(inFromDataSocket3);
                         break;
+
+                    case "get":
+                        String dwlFile = cmd.substring(4);
+                        Socket downloadDataSocket = generateDataSocket(outToServer,inFromServer);
+                        BufferedReader inFromDownloadSocket = new BufferedReader(new InputStreamReader(downloadDataSocket.getInputStream()));
+                        outToServer.writeBytes("retr " + dwlFile + "\r\n");
+                        dwlFile(inFromDownloadSocket,dwlFile);
 
                     case "sto":
                         String uploadFile = cmd.substring(7);
@@ -112,6 +118,8 @@ public class FTPProtocol {
         } catch (java.io.IOException ioE) {
             System.out.println(ioE);
             System.exit(1);
+        }catch (Exception e){
+            System.out.println(e);
         }
     }
 
@@ -164,6 +172,41 @@ public class FTPProtocol {
 
         //System.out.println(finalP);
         return finalP;
+    }
+
+    public static void dwlFile(BufferedReader inFromDownloadSocket, String dwlFile)throws java.io.IOException {
+
+        File file = new File(dwlFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(file,true);
+
+        do {
+            String line = inFromDownloadSocket.readLine();
+            fileOutputStream.write(line.getBytes());
+        }
+        while (inFromDownloadSocket.ready());
+
+        fileOutputStream.close();
+
+
+
+        /*File file = new File(dwlFile);
+
+        try {
+            OutputStream outputStream = new FileOutputStream(file);
+
+            while (inFromServer.ready()){
+                String line = inFromServer.readLine();
+                outputStream.write(Integer.parseInt(line));
+                break;
+            }
+
+            outputStream.close();
+
+        }
+
+        catch (java.io.IOException e){
+            System.out.println(e);
+        }*/
     }
 }
 
