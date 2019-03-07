@@ -1,3 +1,0 @@
-The errata list for Scott Meyers' "Effective C++" is no longer located
-here.  Instead, it is available via anonymous FTP from aw.com in the
-directory aw.prof.comp.series and the file meyers.effectivec++.errata.

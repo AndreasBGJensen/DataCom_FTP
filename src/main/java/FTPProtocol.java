@@ -179,17 +179,12 @@ public class FTPProtocol {
         File file = new File(dwlFile);
         FileOutputStream fileOutputStream = new FileOutputStream(file,true);
 
-        try {
-            do {
-                int line = inFromDownloadSocket.read();
-                fileOutputStream.write(line);
-            }
-            while (inFromDownloadSocket.ready());
-        }finally {
-            if (inFromDownloadSocket != null){
-                inFromDownloadSocket.close();
-            }
+        do {
+            int line = inFromDownloadSocket.read();
+            fileOutputStream.write(line);
         }
+        while (inFromDownloadSocket.ready());
+
         fileOutputStream.close();
 
 
