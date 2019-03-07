@@ -82,7 +82,7 @@ public class FTPProtocol {
                     case "get":
                         String dwlFile = cmd.substring(4);
                         Socket downloadDataSocket = generateDataSocket(outToServer,inFromServer);
-                        BufferedReader inFromDownloadSocket = new BufferedReader(new InputStreamReader(downloadDataSocket.getInputStream()));
+                        InputStreamReader inFromDownloadSocket = new InputStreamReader(downloadDataSocket.getInputStream());
                         outToServer.writeBytes("retr " + dwlFile + "\r\n");
                         dwlFile(inFromDownloadSocket,dwlFile);
 
@@ -174,14 +174,14 @@ public class FTPProtocol {
         return finalP;
     }
 
-    public static void dwlFile(BufferedReader inFromDownloadSocket, String dwlFile)throws java.io.IOException {
+    public static void dwlFile(InputStreamReader inFromDownloadSocket, String dwlFile)throws java.io.IOException {
 
         File file = new File(dwlFile);
         FileOutputStream fileOutputStream = new FileOutputStream(file,true);
 
         do {
-            String line = inFromDownloadSocket.readLine();
-            fileOutputStream.write(line.getBytes());
+            int line = inFromDownloadSocket.read();
+            fileOutputStream.write(line);
         }
         while (inFromDownloadSocket.ready());
 
