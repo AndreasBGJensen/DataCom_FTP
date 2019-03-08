@@ -1,6 +1,6 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import sun.misc.IOUtils;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -51,6 +51,7 @@ public class FTPProtocol {
                     "\nretr 'file name'         (to retrieve a named file)" +
                     "\nstore 'file name'        (to upload a named file to the server)" +
                     "\nappend 'file name'       (to append an existing file)" +
+                    "\ndlf 'file name'          (to download a file to your computer)" +
                     "\nexit                     (to exit program)");
             System.out.println("-----------------");
 
@@ -124,6 +125,16 @@ public class FTPProtocol {
                         System.out.println("-----------------");
                         break;
 
+                    case "dlf":
+                        String dlFileName = cmd.substring(4);
+                        Socket dataSocketDl = generateDataSocket(outToServer, inFromServer);
+                        InputStreamReader inFromDataSocketDl = new InputStreamReader((dataSocketDl.getInputStream()));
+                        outToServer.writeBytes("retr " + dlFileName + "\r\n");
+                        dlFile(inFromDataSocketDl, dlFileName);
+                        System.out.println("File has been downloaded.");
+                        System.out.println("-----------------");
+                        break;
+
                     default:
                         System.out.println("Command unknown, Try again.");
                         System.out.println("-----------------");
@@ -180,6 +191,18 @@ public class FTPProtocol {
                 + Integer.parseInt(port[5].substring(0, port[5].length() - 1)));
 
         return finalP;
+    }
+
+    public static void dlFile(InputStreamReader inFromDataSocketDl, String dlFile)throws java.io.IOException{
+
+        File fileName = new File(dlFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName,true);
+
+        do{
+            int line = inFromDataSocketDl.read();
+            fileOutputStream.write(line);
+        }while(inFromDataSocketDl.ready());
+        fileOutputStream.close();
     }
 }
 
